@@ -156,11 +156,30 @@ public class Game {
         int totalRows = grid.length;
         int totalColumns = totalRows;
 
+        // check if game is a Tie
+        boolean found_blank = false;
+        for (char[] row : grid) {
+            for (char field : row) {
+                if (field == '-') {
+                    found_blank = true;
+                }
+            }
+        }
+
+        if (!found_blank) {
+            result = "tie";
+        }
+
         for (int currentRow = 0; currentRow < totalRows; currentRow++) {
             int x_count_in_row = 0;
-            int o_count_in_row = 0;
             int x_count_in_column = 0;
+            int x_count_diagonal_top_left = 0;
+            int x_count_diagonal_top_right = 0;
+
+            int o_count_in_row = 0;
             int o_count_in_column = 0;
+            int o_count_diagonal_top_left = 0;
+            int o_count_diagonal_top_right = 0;
 
             for (int currentColumn = 0; currentColumn < totalColumns; currentColumn++) {
                 if (grid[currentRow][currentColumn] == 'x') {
@@ -169,6 +188,12 @@ public class Game {
                 if (grid[currentColumn][currentRow] == 'x') {
                     x_count_in_column += 1;
                 }
+                if (grid[currentColumn][currentColumn] == 'x') { // condition for (0,0),(1,1),(2,2)
+                    x_count_diagonal_top_left += 1;
+                }
+                if (grid[currentColumn][totalColumns - currentColumn - 1] == 'x') { // condition for (2,0),(1,1),(0,2)
+                    x_count_diagonal_top_right += 1;
+                }
 
                 if (grid[currentRow][currentColumn] == 'o') {
                     o_count_in_row += 1;
@@ -176,17 +201,18 @@ public class Game {
                 if (grid[currentColumn][currentRow] == 'o') {
                     o_count_in_column += 1;
                 }
+                if (grid[currentColumn][currentColumn] == 'o') {
+                    o_count_diagonal_top_left += 1;
+                }
+                if (grid[currentColumn][totalColumns - currentColumn - 1] == 'o') {
+                    o_count_diagonal_top_right += 1;
+                }
             }
-            if (x_count_in_row == totalRows) {
+            if ((x_count_in_row == totalRows) || (x_count_in_column == totalColumns) || (x_count_diagonal_top_right == totalColumns) || (x_count_diagonal_top_left == totalColumns)) {
                 result = "x wins";
             }
-            if (x_count_in_column == totalColumns) {
-                result = "x wins";
-            }
-            if (o_count_in_row == totalRows) {
-                result = "o wins";
-            }
-            if (o_count_in_column == totalColumns) {
+
+            if ((o_count_in_row == totalRows) || (o_count_in_column == totalColumns) || (o_count_diagonal_top_right == totalColumns) || (o_count_diagonal_top_left == totalColumns)) {
                 result = "o wins";
             }
         }
